@@ -1,12 +1,11 @@
 const settings = Object.freeze({
     disableLength: ['disableLength', 60],
-    disableTimer: ['disableTimer', 0],
     urls: ['urls', []],
     reflectionLength: ['reflectionLength', 5],
     quickLength: ['quickLength', 1],
     normalLength: ['normalLength', 10],
     replaceTitle: ['replaceTitle', true],
-    customContent: ['customContent', ''],
+    customReflections: ['customReflections', []],
     timestamps: ['timestamps', []],
 })
 let usedUrl
@@ -45,14 +44,20 @@ async function setTimestamp(length) {
     else timestamps[found] = { url: usedUrl, time: Date.now() + length }
     await setSetting(settings.timestamps, timestamps)
 }
-/**
- * TODO:
- * make disabling work
- * make urls work
- * make reflection length work
- * make replace title work
- * make custom content work
- */
+
+async function getReflection() {
+    const reflections = await getSetting(settings.customReflections)
+    const prunedReflections = []
+    for (let reflection of reflections) {
+        if (reflection.substring(0, 2) == '//') continue
+        if (reflection == '') continue
+        prunedReflections.push(reflection)
+    }
+
+    if (prunedReflections.length == 0) return 'Is it worth it?'
+    return prunedReflections[Math.floor(Math.random() * prunedReflections.length)]
+}
+
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\/\]\\]/g, '\\$&') // $& means the whole matched string
 }
@@ -66,14 +71,15 @@ function msToHMS(ms) {
     return { h: hours, m: minutes, s: seconds }
 }
 
-function changeTitle(timestamp) {
+async function changeTitle(timestamp) {
+    if (!(await getSetting(settings.replaceTitle))) return
     const remaining = msToHMS(timestamp - Date.now())
     document.title = `${remaining.h > 0 ? remaining.h + ':' : ''}${remaining.m}:${remaining.s} | ${originalTitle}`
 }
 
 class Cover {
     #el
-    #buttons
+    #continueButton
     #countdown
     #reflection
     #ids = {
@@ -89,7 +95,7 @@ class Cover {
         if (!(await this.#urlMatches())) return
         await this.#addHtml()
 
-        await this.#doCountdown()
+        this.#doCountdown()
         if (!(await this.#browseIfBeforeTime())) {
             chrome.storage.onChanged.addListener(async () => {
                 await this.#browseIfBeforeTime()
@@ -126,18 +132,17 @@ class Cover {
 
         return false
     }
-    //todo make customizable reflections
     async #addHtml() {
         const html = `
             <div class="oneMomentReflection">
-                Is this necessary?
+                <span id="currentOneMomentReflection">${await getReflection()}</span>
                 <h1 class="oneMomentCountDown">${await getSetting(settings.reflectionLength)}</h1>
             </div>
             <span></span>
             <span></span>
-            <div id="oneMomentExtensionButtons" class="hidden">
-                <span id="${this.#ids.quick}" class="oneMomentButton">Quick check</span>
-                <span id="${this.#ids.continue}" class="oneMomentButton">Continue</span>
+            <div id="oneMomentExtensionButtons"">
+                <span id="${this.#ids.quick}" class="oneMomentButton${(await getSetting(settings.quickLength)) == 0 ? ' displayNone' : ''}">Quick check</span>
+                <span id="${this.#ids.continue}" class="oneMomentButton hidden">Continue</span>
             </div>
         `
         this.#el = document.createElement('div')
@@ -160,16 +165,15 @@ class Cover {
     }
 
     async #continue(length) {
-        console.log(length * 60)
         const lengthMs = Math.round(length * 60 * 1000)
         await setTimestamp(lengthMs)
         this.#doBrowsingLoop()
     }
 
     async #doBrowsingLoop() {
-        chrome.storage.onChanged.removeListener(async () => {
-            this.#browseIfBeforeTime
-        })
+        // chrome.storage.onChanged.removeListener(async () => {
+        //     this.#browseIfBeforeTime
+        // })
         this.#hideCover()
         let timestamp = await getTimestamp()
         changeTitle(timestamp)
@@ -192,20 +196,20 @@ class Cover {
         }
         await new Promise((r) => setTimeout(r, 1000))
         this.#countdown.innerText = 0
-        this.#showButtons()
+        this.#showContinue()
     }
 
-    #showButtons() {
-        if (!this.#buttons) this.#buttons = this.#el.querySelector(`#${this.#ids.buttons}`)
-        this.#buttons.classList.remove('hidden')
+    #showContinue() {
+        if (!this.#continueButton) this.#continueButton = this.#el.querySelector(`#${this.#ids.continue}`)
+        this.#continueButton.classList.remove('hidden')
     }
-    #hideButtons() {
-        if (!this.#buttons) this.#buttons = this.#el.querySelector(`#${this.#ids.buttons}`)
-        this.#buttons.classList.add('hidden')
+    #hideContinue() {
+        if (!this.#continueButton) this.#continueButton = this.#el.querySelector(`#${this.#ids.continue}`)
+        this.#continueButton.classList.add('hidden')
     }
 
     async #showCover() {
-        this.#hideButtons()
+        this.#hideContinue()
         this.#countdown.innerText = await getSetting(settings.reflectionLength)
         this.#el.classList.remove('displayNone')
         this.#doCountdown()
@@ -225,6 +229,5 @@ class Cover {
 }
 
 ;(async function () {
-    console.log(await getSetting(settings.timestamps))
     const cover = new Cover()
 })()

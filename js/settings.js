@@ -1,13 +1,12 @@
 //I would make this an export to avoid duplication, but it doesn't seem possible to make content scripts modules, so I wouldn't be able to import these into cover.js
 const settings = Object.freeze({
     disableLength: ['disableLength', 60],
-    disableTimer: ['disableTimer', 0],
     urls: ['urls', []],
     reflectionLength: ['reflectionLength', 5],
     quickLength: ['quickLength', 1],
     normalLength: ['normalLength', 10],
     replaceTitle: ['replaceTitle', true],
-    customContent: ['customContent', ''],
+    customReflections: ['customReflections', []],
     timestamps: ['timestamps', []],
 })
 
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         normalLength: document.querySelector('#normalLength'),
         quickLength: document.querySelector('#quickLength'),
         replaceTitle: document.querySelector('#replaceTitle'),
-        customContent: document.querySelector('#customContent'),
+        customReflections: document.querySelector('#customReflections'),
         saveIndicator: document.querySelector('#saveIndicator'),
     })
 
@@ -43,8 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     elems.normalLength.value = await getSetting(settings.normalLength)
     elems.quickLength.value = await getSetting(settings.quickLength)
     elems.replaceTitle.checked = await getSetting(settings.replaceTitle)
-    elems.customContent.value = await getSetting(settings.customContent)
-
+    elems.customReflections.innerHTML = (await getSetting(settings.customReflections)).join('<br>')
     function saved() {
         elems.saveIndicator.textContent += 'saved'
     }
@@ -71,6 +69,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         await setSetting(settings.urls, val)
         saved()
     })
+    elems.customReflections.addEventListener('input', async (e) => {
+        let val = e.target.innerText.split('\n')
+        if (JSON.stringify(val) == '["",""]') {
+            console.log(e.target)
+            e.target.innerHTML = ''
+            val = []
+        }
+        await setSetting(settings.customReflections, val)
+        saved()
+    })
     elems.reflectionLength.addEventListener('input', async (e) => {
         let val = e.target.value == '' ? 1 : e.target.value
         await setSetting(settings.reflectionLength, val)
@@ -90,8 +98,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         await setSetting(settings.replaceTitle, e.target.checked)
         saved()
     })
-    elems.customContent.addEventListener('input', async (e) => {
-        await setSetting(settings.customContent, e.target.value)
-        saved()
+
+    elems.disable.addEventListener('click', async () => {
+        const timestamps = await getSetting(settings.timestamps)
+        const disableLength = (await getSetting(settings.disableLength)) * 60 * 1000
+        console.log(timestamps)
+        const newTimestamps = []
+        const urls = await getSetting(settings.urls)
+        for (let selector of urls) {
+            if (selector.substring(0, 2) == '//') continue
+            if (selector == '') continue
+            newTimestamps.push({ url: selector, time: Date.now() + disableLength })
+        }
+        await setSetting(settings.timestamps, newTimestamps)
     })
 })

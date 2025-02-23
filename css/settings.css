@@ -38,7 +38,7 @@ input[type=number]::-webkit-inner-spin-button {
   margin-bottom: 0;
 }
 
-#urls {
+.expandableTextField {
   width: 100%;
   min-height: 6em;
   display: block;
@@ -46,11 +46,18 @@ input[type=number]::-webkit-inner-spin-button {
   font-family: "Consolas", monospace;
   padding: 10px;
 }
-#urls:empty:before {
+.expandableTextField:empty:before {
   cursor: text;
   color: rgba(0, 0, 0, 0.6784313725);
   white-space: pre;
+}
+
+#urls:empty::before {
   content: "example.com/<< \a example.com/<.*>/page";
+}
+
+#customReflections:empty::before {
+  content: "Is it worth it?";
 }
 
 #disable {

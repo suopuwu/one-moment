@@ -22,7 +22,7 @@
                 or www. Settings will only update on a reload of the url in question. Beginning a line with // will make a comment. If you wish to use regex,
                 surround the regex with < >
             </p>
-            <span id="urls" contenteditable="true"></span>
+            <span id="urls" contenteditable="true" class="expandableTextField"></span>
         </span>
         <span class="setting-group">
             <h1>Lengths</h1>
@@ -32,24 +32,16 @@
             <p>Quick check:<input type="number" name="quickLength" id="quickLength" min="0" /> minute(s), 0 disables the option.</p>
         </span>
         <span class="setting-group">
-            <h1>Normal continue length</h1>
-        </span>
-        <span class="setting-group">
-            <h1>Quick check length</h1>
-        </span>
-        <span class="setting-group">
             <h1>Replace title</h1>
             <span id="replaceTitleContainer"><input type="checkbox" id="replaceTitle" /> Replace the title of a tab with how much time is left.</span>
         </span>
         <span class="setting-group">
-            <h1>Custom content</h1>
+            <h1>Custom reflections</h1>
             <p>
-                For advanced users, replace the content of the blocking popup with something else. The only requirements are that you need two elements with
-                classes of "leaveOneMoment" and "continueOneMoment" in a container with a class of "oneMomentExtensionButtons". The container will have the
-                class "hidden" removed from it after the extension times out. When the user clicks on either of those, they will act as buttons. Paste your html
-                below:
+                Simply write one motivational quote per line, and it will randomly choose between them. White space and comments indicated by a // are ignored
+                here, as in the url section.
             </p>
-            <textarea name="customContent" id="customContent"></textarea>
+            <span id="customReflections" contenteditable="true" class="expandableTextField"></span>
         </span>
         <span id="saveIndicator"></span>
     </body>
