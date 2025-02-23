@@ -1,6 +1,6 @@
 {
   "name": "One Moment",
-  "description": "An extension that helps prevent mindless scrolling by requiring you to think about why you're opening specific webpages before you can access them.",
+  "description": "An extension that helps prevent mindless scrolling, similar to one sec or screen zen.",
   "version": "1.0",
   "manifest_version": 3,
   "icons": {
