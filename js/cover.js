@@ -31,9 +31,20 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\/\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
+function msToHMS(ms) {
+    let seconds = ms / 1000
+    const hours = parseInt(seconds / 3600) // 3,600 seconds in 1 hour
+    seconds = seconds % 3600 // seconds remaining after extracting hours
+    const minutes = parseInt(seconds / 60) // 60 seconds in 1 minute
+    seconds = Math.round(seconds % 60)
+    return { h: hours, m: minutes, s: seconds }
+}
+
 class Cover {
     #el
     #buttons
+    #countdown
+    #reflection
     #ids = {
         continue: 'continueOneMoment',
         quick: 'quickOneMoment',
@@ -45,7 +56,7 @@ class Cover {
 
     async #init() {
         if (!(await this.#urlMatches())) return
-        this.#addHtml()
+        await this.#addHtml()
         // setTimeout(() => {
         //     this.#hideCover()
         // }, (await getSetting(settings.reflectionLength)) * 1000)
@@ -73,11 +84,11 @@ class Cover {
         return false
     }
     //todo make customizable reflections
-    #addHtml() {
+    async #addHtml() {
         const html = `
             <div class="oneMomentReflection">
                 Is this necessary?
-                <h1 class="oneMomentCountDown">10</h1>
+                <h1 class="oneMomentCountDown">${await getSetting(settings.reflectionLength)}</h1>
             </div>
             <span></span>
             <span></span>
@@ -89,6 +100,9 @@ class Cover {
         this.#el = document.createElement('div')
         this.#el.innerHTML = html
         this.#el.classList.add('oneMomentExtensionSuperCoolWrapper')
+        this.#countdown = this.#el.querySelector('.oneMomentCountDown')
+        this.#reflection = this.#el.querySelector('.oneMomentReflection')
+
         document.body.appendChild(this.#el)
         this.#el.addEventListener('click', (e) => {
             switch (e.target.id) {
@@ -106,6 +120,21 @@ class Cover {
                     break
             }
         })
+
+        this.#doCountdown()
+    }
+
+    async #doCountdown() {
+        let currentCount = Number(this.#countdown.innerText)
+        this.#reflection.style.setProperty('--animation-count', currentCount + 1)
+        while (currentCount > 1) {
+            await new Promise((r) => setTimeout(r, 1000))
+            currentCount--
+            this.#countdown.innerText = currentCount
+        }
+        await new Promise((r) => setTimeout(r, 1000))
+        this.#countdown.innerText = 0
+        this.#showButtons()
     }
 
     #showButtons() {
@@ -117,8 +146,10 @@ class Cover {
         this.#buttons.classList.add('hidden')
     }
 
-    #showCover() {
+    async #showCover() {
+        this.#countdown.innerText = await getSetting(settings.reflectionLength)
         this.#el.classList.remove('displayNone')
+        this.#doCountdown()
         setTimeout(() => {
             this.#el.classList.remove('hidden')
         }, 1)
