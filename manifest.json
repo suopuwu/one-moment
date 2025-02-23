@@ -13,12 +13,13 @@
     "default_popup": "settings.html",
     "default_icon": "img/128.png"
   },
-    "permissions": [
+  "options_page": "settings.html",
+  "permissions": [
     "storage"
   ],
   "content_scripts": [
     {
-        "js": ["js/main.js"],
+        "js": ["js/cover.js"],
         "css": ["css/style.css"],
         "matches": [
             "http://*/*", 

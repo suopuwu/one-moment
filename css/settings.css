@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+}
+
+body {
+  margin: auto;
+  width: 1000px;
+  font-size: 13px;
+  display: flex;
+  flex-flow: column;
+}
+
+h1 {
+  font-size: 2em;
+  letter-spacing: -1px;
+}
+
+input[type=number] {
+  width: 3em;
+}
+input[type=number]::-webkit-inner-spin-button {
+  display: none;
+}
+
+.setting-group {
+  margin-bottom: 1em;
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+}
+.setting-group:last-of-type {
+  margin-bottom: 0;
+}
+
+#urls {
+  width: 100%;
+  min-height: 6em;
+  display: block;
+  outline: 1px black solid;
+  font-family: "Consolas", monospace;
+}
+#urls:empty:before {
+  cursor: text;
+  color: rgba(0, 0, 0, 0.6784313725);
+  white-space: pre;
+  content: "example.com<< \a example.com/<.*>/page";
+}
+
+#disable {
+  font-size: 2em;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #EF5350;
+  color: white;
+}
+
+#replaceTitleContainer {
+  display: flex;
+}/*# sourceMappingURL=settings.css.map */

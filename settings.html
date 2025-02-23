@@ -1,8 +1,44 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>test</title>
+        <title>Settings</title>
         <meta charset="utf-8" />
+        <link rel="stylesheet" href="css/settings.css" />
+        <script src="js/settings.js"></script>
     </head>
-    <body></body>
+    <body>
+        <span class="setting-group" id="loadingIndicator">Loading settings...</span>
+        <span class="setting-group">
+            <span id="disable">Disable</span>
+            <p>
+                Disable length:
+                <input type="number" name="disableLength" id="disableLength" min="1" />
+                minutes
+            </p>
+        </span>
+        <span class="setting-group">
+            <h1>Urls</h1>
+            <p>
+                Write your urls here, one per line. A '<<' represents 0 or more characters of any kind (without the quotes). Do not include http:// or https://.
+                If you wish to use regex, surround the regex with < >
+            </p>
+            <span id="urls" contenteditable="true" oninput=""></span>
+        </span>
+        <span class="setting-group">
+            <h1>Reflection Length</h1>
+            <p>
+                <input type="number" name="reflectionLength" id="reflectionLength" min="1" />
+                seconds
+            </p>
+        </span>
+        <span class="setting-group">
+            <h1>Replace title</h1>
+            <span id="replaceTitleContainer"><input type="checkbox" id="replaceTitle" /> Replace the title of a tab with how much time is left.</span>
+        </span>
+        <span class="setting-group">
+            <h1>Custom content</h1>
+            <p>For advanced users, replace the content of the blocking popup with something else. Paste your html below:</p>
+            <textarea name="customContent" id="customContent"></textarea>
+        </span>
+    </body>
 </html>

@@ -1,19 +1,22 @@
 console.log(window.location)
 const settings = Object.freeze({
-    timers: 'timers',
-    disableLength: 'disableLength',
-    duration: 'duration',
-    urls: 'urls',
-    waitPage: 'waitPage',
+    disableLength: ['disableLength', 60 * 60 * 1000],
+    urls: ['urls', []],
+    duration: ['reflectionLength', 5000],
+    replaceTitle: ['replaceTitle', true],
+    customContent: ['customContent', ''],
+    timestamps: ['timers', []],
 })
 
 function setSetting(setting, val) {
     let temp = {}
-    temp[setting] = val
+    temp[setting[0]] = val
     return chrome.storage.sync.set(temp)
 }
 function getSetting(setting) {
-    return chrome.storage.sync.get([setting])
+    let temp = {}
+    temp[setting[0]] = setting[1]
+    return chrome.storage.sync.get(temp)
 }
 
 function createCover() {
@@ -36,7 +39,7 @@ function hideCover(cover) {
 
 ;(async () => {
     const cover = createCover()
-    showCover(cover)
+    // showCover(cover)
     setTimeout(() => {
         hideCover(cover)
     }, 5000)
