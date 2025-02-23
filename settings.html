@@ -7,22 +7,21 @@
         <script src="js/settings.js"></script>
     </head>
     <body>
-        <span class="setting-group" id="loadingIndicator">Loading settings...</span>
         <span class="setting-group">
             <span id="disable">Disable</span>
             <p>
                 Disable length:
                 <input type="number" name="disableLength" id="disableLength" min="1" />
-                minutes
+                minute(s)
             </p>
         </span>
         <span class="setting-group">
             <h1>Urls</h1>
             <p>
                 Write your urls here, one per line. A '<<' represents 0 or more characters of any kind (without the quotes). Do not include http:// or https://.
-                If you wish to use regex, surround the regex with < >
+                Beginning a line with // will make a comment. If you wish to use regex, surround the regex with < >
             </p>
-            <span id="urls" contenteditable="true" oninput=""></span>
+            <span id="urls" contenteditable="true"></span>
         </span>
         <span class="setting-group">
             <h1>Reflection Length</h1>
@@ -40,5 +39,6 @@
             <p>For advanced users, replace the content of the blocking popup with something else. Paste your html below:</p>
             <textarea name="customContent" id="customContent"></textarea>
         </span>
+        <span id="saveIndicator"></span>
     </body>
 </html>

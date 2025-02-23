@@ -1,8 +1,9 @@
 console.log(window.location)
 const settings = Object.freeze({
-    disableLength: ['disableLength', 60 * 60 * 1000],
+    disableLength: ['disableLength', 60],
+    disableTimer: ['disableTimer', 0],
     urls: ['urls', []],
-    duration: ['reflectionLength', 5000],
+    duration: ['reflectionLength', 5],
     replaceTitle: ['replaceTitle', true],
     customContent: ['customContent', ''],
     timestamps: ['timers', []],

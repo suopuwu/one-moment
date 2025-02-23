@@ -44,6 +44,7 @@ input[type=number]::-webkit-inner-spin-button {
   display: block;
   outline: 1px black solid;
   font-family: "Consolas", monospace;
+  padding: 10px;
 }
 #urls:empty:before {
   cursor: text;
@@ -63,4 +64,8 @@ input[type=number]::-webkit-inner-spin-button {
 
 #replaceTitleContainer {
   display: flex;
+}
+
+#customContent {
+  padding: 10px;
 }/*# sourceMappingURL=settings.css.map */
