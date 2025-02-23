@@ -44,6 +44,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     //add event listeners
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault()
+            saved()
+        }
+    })
+
     elems.disableLength.addEventListener('input', async (e) => {
         let val = e.target.value == '' ? 1 : e.target.value
         await setSetting(settings.disableLength, val)

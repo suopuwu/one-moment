@@ -50,7 +50,7 @@ input[type=number]::-webkit-inner-spin-button {
   cursor: text;
   color: rgba(0, 0, 0, 0.6784313725);
   white-space: pre;
-  content: "example.com<< \a example.com/<.*>/page";
+  content: "example.com/<< \a example.com/<.*>/page";
 }
 
 #disable {
