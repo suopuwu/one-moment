@@ -25,18 +25,17 @@
             <span id="urls" contenteditable="true"></span>
         </span>
         <span class="setting-group">
-            <h1>Reflection Length</h1>
-            <p>
-                <input type="number" name="reflectionLength" id="reflectionLength" min="1" />
-                second(s)
-            </p>
+            <h1>Lengths</h1>
+            <p>Decimals work for all of these, though it can make the ui look weird for reflection.</p>
+            <p>Reflection: <input type="number" name="reflectionLength" id="reflectionLength" min="0" /> second(s)</p>
+            <p>Continue:<input type="number" name="normalLength" id="normalLength" min="0" /> minute(s)</p>
+            <p>Quick check:<input type="number" name="quickLength" id="quickLength" min="0" /> minute(s), 0 disables the option.</p>
+        </span>
+        <span class="setting-group">
+            <h1>Normal continue length</h1>
         </span>
         <span class="setting-group">
             <h1>Quick check length</h1>
-            <p>
-                <input type="number" name="quickLength" id="quickLength" min="0" />
-                minute(s), 0 disables the option.
-            </p>
         </span>
         <span class="setting-group">
             <h1>Replace title</h1>

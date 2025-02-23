@@ -4,11 +4,13 @@ const settings = Object.freeze({
     urls: ['urls', []],
     reflectionLength: ['reflectionLength', 5],
     quickLength: ['quickLength', 1],
+    normalLength: ['normalLength', 10],
     replaceTitle: ['replaceTitle', true],
     customContent: ['customContent', ''],
-    timestamps: ['timers', []],
+    timestamps: ['timestamps', []],
 })
-
+let usedUrl
+const originalTitle = document.title
 async function setSetting(setting, val) {
     let temp = {}
     temp[setting[0]] = val
@@ -18,6 +20,30 @@ async function getSetting(setting) {
     let temp = {}
     temp[setting[0]] = setting[1]
     return (await chrome.storage.sync.get(temp))[setting[0]]
+}
+
+async function getTimestamp() {
+    const timestamps = await getSetting(settings.timestamps)
+    for (const timestamp of timestamps) {
+        if (timestamp.url == usedUrl) {
+            return timestamp.time
+        }
+    }
+    return 0
+}
+
+async function setTimestamp(length) {
+    const timestamps = await getSetting(settings.timestamps)
+    let found = -1
+    for (const [i, timestamp] of timestamps.entries()) {
+        if (timestamp.url == usedUrl) {
+            found = i
+        }
+    }
+    let newVal = { url: usedUrl, time: Date.now() + length }
+    if (found == -1) timestamps.push(newVal)
+    else timestamps[found] = { url: usedUrl, time: Date.now() + length }
+    await setSetting(settings.timestamps, timestamps)
 }
 /**
  * TODO:
@@ -36,8 +62,13 @@ function msToHMS(ms) {
     const hours = parseInt(seconds / 3600) // 3,600 seconds in 1 hour
     seconds = seconds % 3600 // seconds remaining after extracting hours
     const minutes = parseInt(seconds / 60) // 60 seconds in 1 minute
-    seconds = Math.round(seconds % 60)
+    seconds = Math.floor(seconds % 60)
     return { h: hours, m: minutes, s: seconds }
+}
+
+function changeTitle(timestamp) {
+    const remaining = msToHMS(timestamp - Date.now())
+    document.title = `${remaining.h > 0 ? remaining.h + ':' : ''}${remaining.m}:${remaining.s} | ${originalTitle}`
 }
 
 class Cover {
@@ -57,9 +88,20 @@ class Cover {
     async #init() {
         if (!(await this.#urlMatches())) return
         await this.#addHtml()
-        // setTimeout(() => {
-        //     this.#hideCover()
-        // }, (await getSetting(settings.reflectionLength)) * 1000)
+
+        await this.#doCountdown()
+        if (!(await this.#browseIfBeforeTime())) {
+            chrome.storage.onChanged.addListener(async () => {
+                await this.#browseIfBeforeTime()
+            })
+        }
+    }
+
+    async #browseIfBeforeTime() {
+        if ((await getTimestamp()) > Date.now()) {
+            await this.#doBrowsingLoop()
+            return true
+        } else return false
     }
 
     //gets the current url without www. or https:// or http://
@@ -74,6 +116,7 @@ class Cover {
         for (let selector of urls) {
             if (selector.substring(0, 2) == '//') continue
             if (selector == '') continue
+            usedUrl = selector
             selector = escapeRegExp(selector)
             selector = selector.replaceAll('<<', '.*')
             selector = '^' + selector + '$'
@@ -104,24 +147,39 @@ class Cover {
         this.#reflection = this.#el.querySelector('.oneMomentReflection')
 
         document.body.appendChild(this.#el)
-        this.#el.addEventListener('click', (e) => {
+        this.#el.addEventListener('click', async (e) => {
             switch (e.target.id) {
                 case this.#ids.quick:
-                    this.#hideButtons()
-                    setTimeout(() => {
-                        this.#showButtons()
-                    }, 1000)
+                    this.#continue(await getSetting(settings.quickLength))
                     break
                 case this.#ids.continue:
-                    this.#hideCover()
-                    setTimeout(() => {
-                        this.#showCover()
-                    }, 1000)
+                    this.#continue(await getSetting(settings.normalLength))
                     break
             }
         })
+    }
 
-        this.#doCountdown()
+    async #continue(length) {
+        console.log(length * 60)
+        const lengthMs = Math.round(length * 60 * 1000)
+        await setTimestamp(lengthMs)
+        this.#doBrowsingLoop()
+    }
+
+    async #doBrowsingLoop() {
+        chrome.storage.onChanged.removeListener(async () => {
+            this.#browseIfBeforeTime
+        })
+        this.#hideCover()
+        let timestamp = await getTimestamp()
+        changeTitle(timestamp)
+        while (timestamp > Date.now()) {
+            changeTitle(timestamp)
+            timestamp = await getTimestamp()
+            await new Promise((r) => setTimeout(r, 1000))
+        }
+        document.title = originalTitle
+        this.#showCover()
     }
 
     async #doCountdown() {
@@ -147,6 +205,7 @@ class Cover {
     }
 
     async #showCover() {
+        this.#hideButtons()
         this.#countdown.innerText = await getSetting(settings.reflectionLength)
         this.#el.classList.remove('displayNone')
         this.#doCountdown()
@@ -166,5 +225,6 @@ class Cover {
 }
 
 ;(async function () {
+    console.log(await getSetting(settings.timestamps))
     const cover = new Cover()
 })()

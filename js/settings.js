@@ -5,9 +5,10 @@ const settings = Object.freeze({
     urls: ['urls', []],
     reflectionLength: ['reflectionLength', 5],
     quickLength: ['quickLength', 1],
+    normalLength: ['normalLength', 10],
     replaceTitle: ['replaceTitle', true],
     customContent: ['customContent', ''],
-    timestamps: ['timers', []],
+    timestamps: ['timestamps', []],
 })
 
 async function setSetting(setting, val) {
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         disableLength: document.querySelector('#disableLength'),
         urls: document.querySelector('#urls'),
         reflectionLength: document.querySelector('#reflectionLength'),
+        normalLength: document.querySelector('#normalLength'),
         quickLength: document.querySelector('#quickLength'),
         replaceTitle: document.querySelector('#replaceTitle'),
         customContent: document.querySelector('#customContent'),
@@ -38,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     elems.disableLength.value = await getSetting(settings.disableLength)
     elems.urls.innerHTML = (await getSetting(settings.urls)).join('<br>')
     elems.reflectionLength.value = await getSetting(settings.reflectionLength)
+    elems.normalLength.value = await getSetting(settings.normalLength)
     elems.quickLength.value = await getSetting(settings.quickLength)
     elems.replaceTitle.checked = await getSetting(settings.replaceTitle)
     elems.customContent.value = await getSetting(settings.customContent)
@@ -73,8 +76,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         await setSetting(settings.reflectionLength, val)
         saved()
     })
-    elems.quickLength.addEventListener('input', async (e) => {
+    elems.normalLength.addEventListener('input', async (e) => {
         let val = e.target.value == '' ? 1 : e.target.value
+        await setSetting(settings.normalLength, val)
+        saved()
+    })
+    elems.quickLength.addEventListener('input', async (e) => {
+        let val = e.target.value == '' ? 0 : e.target.value
         await setSetting(settings.quickLength, val)
         saved()
     })
