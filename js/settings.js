@@ -4,6 +4,7 @@ const settings = Object.freeze({
     disableTimer: ['disableTimer', 0],
     urls: ['urls', []],
     reflectionLength: ['reflectionLength', 5],
+    quickLength: ['quickLength', 1],
     replaceTitle: ['replaceTitle', true],
     customContent: ['customContent', ''],
     timestamps: ['timers', []],
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         disableLength: document.querySelector('#disableLength'),
         urls: document.querySelector('#urls'),
         reflectionLength: document.querySelector('#reflectionLength'),
+        quickLength: document.querySelector('#quickLength'),
         replaceTitle: document.querySelector('#replaceTitle'),
         customContent: document.querySelector('#customContent'),
         saveIndicator: document.querySelector('#saveIndicator'),
@@ -36,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     elems.disableLength.value = await getSetting(settings.disableLength)
     elems.urls.innerHTML = (await getSetting(settings.urls)).join('<br>')
     elems.reflectionLength.value = await getSetting(settings.reflectionLength)
+    elems.quickLength.value = await getSetting(settings.quickLength)
     elems.replaceTitle.checked = await getSetting(settings.replaceTitle)
     elems.customContent.value = await getSetting(settings.customContent)
 
@@ -68,6 +71,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     elems.reflectionLength.addEventListener('input', async (e) => {
         let val = e.target.value == '' ? 1 : e.target.value
         await setSetting(settings.reflectionLength, val)
+        saved()
+    })
+    elems.quickLength.addEventListener('input', async (e) => {
+        let val = e.target.value == '' ? 1 : e.target.value
+        await setSetting(settings.quickLength, val)
         saved()
     })
     elems.replaceTitle.addEventListener('input', async (e) => {

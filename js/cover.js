@@ -3,6 +3,7 @@ const settings = Object.freeze({
     disableTimer: ['disableTimer', 0],
     urls: ['urls', []],
     reflectionLength: ['reflectionLength', 5],
+    quickLength: ['quickLength', 1],
     replaceTitle: ['replaceTitle', true],
     customContent: ['customContent', ''],
     timestamps: ['timers', []],
@@ -32,9 +33,11 @@ function escapeRegExp(string) {
 
 class Cover {
     #el
+    #buttons
     #ids = {
-        leave: 'leaveOneMoment',
         continue: 'continueOneMoment',
+        quick: 'quickOneMoment',
+        buttons: 'oneMomentExtensionButtons',
     }
     constructor() {
         this.#init()
@@ -72,29 +75,59 @@ class Cover {
     //todo make customizable reflections
     #addHtml() {
         const html = `
-            <div class="oneMomentExtensionButtons hidden">
-                <span class="leaveOneMoment">Leave</span>
-                <span class="continueOneMoment">Continue</span>
+            <div class="oneMomentReflection">
+                Is this necessary?
+                <h1 class="oneMomentCountDown">10</h1>
+            </div>
+            <span></span>
+            <span></span>
+            <div id="oneMomentExtensionButtons" class="hidden">
+                <span id="${this.#ids.quick}" class="oneMomentButton">Quick check</span>
+                <span id="${this.#ids.continue}" class="oneMomentButton">Continue</span>
             </div>
         `
         this.#el = document.createElement('div')
         this.#el.innerHTML = html
         this.#el.classList.add('oneMomentExtensionSuperCoolWrapper')
         document.body.appendChild(this.#el)
-        this.#el.addEventListener((e) => {
-            console.log(e)
+        this.#el.addEventListener('click', (e) => {
+            switch (e.target.id) {
+                case this.#ids.quick:
+                    this.#hideButtons()
+                    setTimeout(() => {
+                        this.#showButtons()
+                    }, 1000)
+                    break
+                case this.#ids.continue:
+                    this.#hideCover()
+                    setTimeout(() => {
+                        this.#showCover()
+                    }, 1000)
+                    break
+            }
         })
     }
 
+    #showButtons() {
+        if (!this.#buttons) this.#buttons = this.#el.querySelector(`#${this.#ids.buttons}`)
+        this.#buttons.classList.remove('hidden')
+    }
+    #hideButtons() {
+        if (!this.#buttons) this.#buttons = this.#el.querySelector(`#${this.#ids.buttons}`)
+        this.#buttons.classList.add('hidden')
+    }
+
     #showCover() {
-        this.#el.style.display = 'block'
-        this.#el.classList.remove('hidden')
+        this.#el.classList.remove('displayNone')
+        setTimeout(() => {
+            this.#el.classList.remove('hidden')
+        }, 1)
     }
 
     #hideCover() {
-        this.#el.style.display = 'block'
+        this.#el.classList.add('hidden')
         setTimeout(() => {
-            this.#el.classList.add('none')
+            this.#el.classList.add('displayNone')
         }, 200)
     }
 
