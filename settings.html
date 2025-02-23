@@ -18,9 +18,9 @@
         <span class="setting-group">
             <h1>Urls</h1>
             <p>
-                Write your urls here, one per line. A '<<' represents 0 or more characters of any kind (without the quotes). Do not include http:// or https://.
-                Settings will only update on a reload of the url in question. Beginning a line with // will make a comment. If you wish to use regex, surround
-                the regex with < >
+                Write your urls here, one per line. A '<<' represents 0 or more characters of any kind (without the quotes). Do not include http://, https://,
+                or www. Settings will only update on a reload of the url in question. Beginning a line with // will make a comment. If you wish to use regex,
+                surround the regex with < >
             </p>
             <span id="urls" contenteditable="true"></span>
         </span>
@@ -37,7 +37,12 @@
         </span>
         <span class="setting-group">
             <h1>Custom content</h1>
-            <p>For advanced users, replace the content of the blocking popup with something else. Paste your html below:</p>
+            <p>
+                For advanced users, replace the content of the blocking popup with something else. The only requirements are that you need two elements with
+                classes of "leaveOneMoment" and "continueOneMoment" in a container with a class of "oneMomentExtensionButtons". The container will have the
+                class "hidden" removed from it after the extension times out. When the user clicks on either of those, they will act as buttons. Paste your html
+                below:
+            </p>
             <textarea name="customContent" id="customContent"></textarea>
         </span>
         <span id="saveIndicator"></span>

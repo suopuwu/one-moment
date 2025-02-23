@@ -26,44 +26,81 @@ async function getSetting(setting) {
  * make replace title work
  * make custom content work
  */
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\/\]\\]/g, '\\$&') // $& means the whole matched string
+}
+
 class Cover {
     #el
-    #urls
+    #ids = {
+        leave: 'leaveOneMoment',
+        continue: 'continueOneMoment',
+    }
     constructor() {
-        this.#addHtml()
         this.#init()
     }
 
+    async #init() {
+        if (!(await this.#urlMatches())) return
+        this.#addHtml()
+        // setTimeout(() => {
+        //     this.#hideCover()
+        // }, (await getSetting(settings.reflectionLength)) * 1000)
+    }
+
+    //gets the current url without www. or https:// or http://
+    #getCurrentUrl() {
+        const urlParts = (window.location.host + window.location.href.split(window.location.host)[1]).split('www.')
+        return urlParts[urlParts.length - 1]
+    }
+
+    async #urlMatches() {
+        const current = this.#getCurrentUrl()
+        const urls = await getSetting(settings.urls)
+        for (let selector of urls) {
+            if (selector.substring(0, 2) == '//') continue
+            if (selector == '') continue
+            selector = escapeRegExp(selector)
+            selector = selector.replaceAll('<<', '.*')
+            selector = '^' + selector + '$'
+            let regex = RegExp(`^${selector}$`, 'i')
+            if (regex.test(current)) return true
+        }
+
+        return false
+    }
+    //todo make customizable reflections
     #addHtml() {
-        const html = ``
+        const html = `
+            <div class="oneMomentExtensionButtons hidden">
+                <span class="leaveOneMoment">Leave</span>
+                <span class="continueOneMoment">Continue</span>
+            </div>
+        `
         this.#el = document.createElement('div')
         this.#el.innerHTML = html
         this.#el.classList.add('oneMomentExtensionSuperCoolWrapper')
         document.body.appendChild(this.#el)
-    }
-
-    async #init() {
-        this.#urls = await getSetting(settings.urls)
-        console.log(this.#urls)
+        this.#el.addEventListener((e) => {
+            console.log(e)
+        })
     }
 
     #showCover() {
-        this.cover.style.display = 'block'
+        this.#el.style.display = 'block'
+        this.#el.classList.remove('hidden')
     }
 
     #hideCover() {
-        cover.style.display = 'none'
+        this.#el.style.display = 'block'
+        setTimeout(() => {
+            this.#el.classList.add('none')
+        }, 200)
     }
 
     cover() {}
 }
 
-function getCurrentUrl() {
-    const urlParts = (window.location.host + window.location.href.split(window.location.host)[1]).split('www.')
-    return urlParts[urlParts.length - 1]
-}
-
 ;(async function () {
     const cover = new Cover()
-    console.log(getCurrentUrl())
 })()

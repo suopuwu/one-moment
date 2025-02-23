@@ -1,9 +1,91 @@
+@font-face {
+  font-family: Atkinson;
+  src: url("chrome-extension://__MSG_@@extension_id__/AtkinsonHyperlegible.ttf") format("truetype");
+}
 div.oneMomentExtensionSuperCoolWrapper {
-  width: 100% !important;
-  height: 100% !important;
+  width: 100vw !important;
+  height: 100vh !important;
   z-index: 99999 !important;
   background-color: black !important;
   top: 0 !important;
   position: fixed !important;
-  display: none;
+  transition: transform 0.2s;
+  transform: translateY(0);
+  color: white;
+  font-family: "Atkinson";
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+}
+div.oneMomentExtensionSuperCoolWrapper.hidden {
+  transform: translateY(-100%);
+}
+
+div.oneMomentExtensionButtons {
+  font-size: 2em;
+  letter-spacing: -1px;
+  margin-bottom: 5%;
+}
+div.oneMomentExtensionButtons .oneMomentButton {
+  cursor: pointer;
+  font-weight: 500;
+  outline: 1px dashed rgba(255, 255, 255, 0.4941176471);
+  padding: 10px;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+div.oneMomentExtensionButtons .oneMomentButton::after {
+  transition: all 0.2s;
+  width: 0%;
+  height: 100%;
+  position: absolute;
+  background-color: white;
+  content: "";
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  top: 0;
+  left: 0;
+  opacity: 0.1;
+  border-radius: 3px;
+}
+div.oneMomentExtensionButtons .oneMomentButton:active::after {
+  opacity: 0.2;
+}
+div.oneMomentExtensionButtons .oneMomentButton:hover::after {
+  width: 100%;
+}
+
+div.oneMomentReflection {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  font-weight: 300;
+  animation-name: tick;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  filter: drop-shadow(0px 0px 300px rgba(255, 255, 255, 0.4941176471));
+}
+div.oneMomentReflection h1 {
+  font-size: 10em;
+  line-height: 0;
+  color: #000;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4941176471);
+  letter-spacing: -0.05em;
+}
+
+@keyframes tick {
+  from {
+    filter: drop-shadow(0px 0px 70px rgba(255, 255, 255, 0.4941176471));
+  }
+  to {
+    filter: drop-shadow(0px 0px 300px rgba(255, 255, 255, 0.4941176471));
+  }
 }/*# sourceMappingURL=style.css.map */

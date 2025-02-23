@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         saved()
     })
     elems.urls.addEventListener('input', async (e) => {
-        let val = e.target.innerHTML.split('<br>')
+        let val = e.target.innerText.split('\n')
         if (JSON.stringify(val) == '["",""]') {
             e.target.innerHTML = ''
             val = []

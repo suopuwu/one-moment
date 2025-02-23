@@ -17,6 +17,15 @@
   "permissions": [
     "storage"
   ],
+  "web_accessible_resources": [
+    {
+        "resources": ["AtkinsonHyperlegible.ttf"],
+        "matches": [
+            "http://*/*", 
+            "https://*/*" 
+        ]
+    }
+  ],
   "content_scripts": [
     {
         "js": ["js/cover.js"],
