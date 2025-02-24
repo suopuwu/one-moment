@@ -228,8 +228,12 @@ class Cover {
     cover() {}
 }
 //TODO make regex work within urls
-//todo add theming and light mode capabilities
-//todo create ball bouncing on stairs animation
+//TODO add theming and light mode capabilities
+//TODO create ball bouncing on stairs animation
+//TODO look into making the changed title work with certain websites like twitter
+//TODO make the time formatter correctly add leading zeroes to the time
+//TODO look into removing the code duplication of the get/set settings functions
+//TODO clean up and organize code where possible
 ;(async function () {
     const cover = new Cover()
 })()
