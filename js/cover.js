@@ -229,6 +229,7 @@ class Cover {
 }
 //TODO make regex work within urls
 //todo add theming and light mode capabilities
+//todo create ball bouncing on stairs animation
 ;(async function () {
     const cover = new Cover()
 })()
