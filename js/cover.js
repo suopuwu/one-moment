@@ -234,6 +234,7 @@ class Cover {
 //TODO make the time formatter correctly add leading zeroes to the time
 //TODO look into removing the code duplication of the get/set settings functions
 //TODO clean up and organize code where possible
+//TODO make the settings layout responsive so it looks good in both page and popup forms
 ;(async function () {
     const cover = new Cover()
 })()
