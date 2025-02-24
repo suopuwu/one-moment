@@ -227,7 +227,8 @@ class Cover {
 
     cover() {}
 }
-
+//TODO make regex work within urls
+//todo add theming and light mode capabilities
 ;(async function () {
     const cover = new Cover()
 })()
