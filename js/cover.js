@@ -5,13 +5,12 @@ async function getCount() {
     const today = new Date().toDateString()
     const defaultCount = { date: today, count: 0, url: usedUrl }
     let count = findByUrl(await getStorage(storage.counts))[1] ?? defaultCount
-    console.log(count)
-    console.log(today)
     if (count.date != today) {
         count = defaultCount
         setOrCreateIfNonexistentByUrl(storage.counts, defaultCount)
     }
-    return findByUrl(await getStorage(storage.counts))[1]?.count ?? 0
+    count.count = Number(count.count.toFixed(2))
+    return count.count
 }
 
 async function getTimestamp() {
@@ -73,7 +72,9 @@ function msToHMS(ms) {
 async function changeTitle(timestamp) {
     if (!(await getStorage(storage.replaceTitle))) return
     const remaining = msToHMS(timestamp - Date.now())
-    document.title = `${remaining.h > 0 ? remaining.h + ':' : ''}${remaining.m}:${remaining.s} | ${originalTitle}`
+    document.title = `${remaining.h > 0 ? remaining.h + ':' : ''}${remaining.h > 0 ? String(remaining.m).padStart(2, '0') : remaining.m}:${String(
+        remaining.s
+    ).padStart(2, '0')} | ${originalTitle}`
 }
 
 async function createReflectionHtml() {
@@ -173,7 +174,7 @@ class Cover {
         const normalLength = await getStorage(storage.normalLength)
         //This is bad practice, if you have time, make it not retrieve from storage so much.
         await setTimestamp(lengthMs)
-        const newCount = await incrementCount(+(Math.round(length / normalLength + 'e+2') + 'e-2'))
+        const newCount = await incrementCount(length / normalLength)
         this.#el.querySelector('#currentOneMomentReflection').innerHTML = await createReflectionHtml()
         this.#doBrowsingLoop()
     }
