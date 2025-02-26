@@ -4,6 +4,7 @@
         <title>Settings</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="css/settings.css" />
+        <script src="js/storage.js"></script>
         <script src="js/settings.js"></script>
     </head>
     <body>
@@ -12,7 +13,7 @@
             <p>
                 Disable length:
                 <input type="number" name="disableLength" id="disableLength" min="1" />
-                minute(s)
+                minute(s). This doesn't affect how many opens you have for a day.
             </p>
         </span>
         <span class="setting-group">
@@ -26,7 +27,11 @@
         </span>
         <span class="setting-group">
             <h1>Lengths</h1>
-            <p>Decimals work for all of these, though it can make the ui look weird for reflection.</p>
+            <p>
+                Decimals work for all of these, though it can make the ui look weird for reflection. The number of opens is calculated based on the continue
+                length, meaning a quick check of half the length of your continue would add 0.5 opens. It is rounded to two decimal places, so small enough
+                quick checks do not affect the counter.
+            </p>
             <p>Reflection: <input type="number" name="reflectionLength" id="reflectionLength" min="0" /> second(s)</p>
             <p>Continue:<input type="number" name="normalLength" id="normalLength" min="0" /> minute(s)</p>
             <p>Quick check:<input type="number" name="quickLength" id="quickLength" min="0" /> minute(s), 0 disables the option.</p>

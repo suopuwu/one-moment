@@ -28,7 +28,7 @@
   ],
   "content_scripts": [
     {
-        "js": ["js/cover.js"],
+        "js": ["js/storage.js", "js/cover.js"],
         "css": ["css/style.css"],
         "matches": [
             "http://*/*", 
