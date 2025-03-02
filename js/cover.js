@@ -237,7 +237,6 @@ class Cover {
 //TODO add theming and light mode capabilities
 //TODO create ball bouncing on stairs animation
 //TODO look into making the changed title work with certain websites like twitter
-//TODO make the time formatter correctly add leading zeroes to the time
 //TODO clean up and organize code where possible
 //TODO make the settings layout responsive so it looks good in both page and popup forms
 ;(async function () {
